@@ -312,7 +312,7 @@ export default function AdminTodos() {
             {Object.keys(userTasks).length === 0 && (
               <div className="text-center py-8 text-gray-500">
                 <p className="text-lg mb-2">No client tasks found</p>
-                <p className="text-sm">Clients haven't created any tasks yet</p>
+                <p className="text-sm">Clients haven&apos;t created any tasks yet</p>
                 <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                   <p className="text-yellow-800 text-sm">
                     💡 To see client tasks: Register a user, login, and create some tasks
@@ -412,7 +412,7 @@ export default function AdminTodos() {
             {allTodos.length === 0 && (
               <div className="text-center py-8 text-gray-500">
                 <p className="text-lg mb-2">No tasks found</p>
-                <p className="text-sm">Clients haven't created any tasks yet</p>
+                <p className="text-sm">Clients haven&apos;t created any tasks yet</p>
               </div>
             )}
           </div>

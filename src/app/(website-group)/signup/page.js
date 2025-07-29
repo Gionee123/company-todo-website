@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import axios from "axios";
+import Link from "next/link";
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -127,6 +128,10 @@ export default function SignupPage() {
         >
           Signup
         </button>
+
+        <div className="mt-4 text-center">
+          <Link href="/login" className="text-blue-600 underline">Already have an account? Login</Link>
+        </div>
       </form>
     </div>
   );

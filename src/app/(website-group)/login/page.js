@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import Link from 'next/link';
 
 function isLoggedIn() {
   if (typeof window === "undefined") return false;
@@ -194,7 +195,7 @@ export default function LoginPage() {
         </button>
 
         <div className="mt-4 text-center">
-          <a href="/signup" className="text-blue-600 underline">Don't have an account? Signup</a>
+          <Link href="/signup" className="text-blue-600 underline">Don&apos;t have an account? Signup</Link>
           <div className="mt-2 text-xs text-gray-500">
             <p>Demo credentials: demo@example.com / demo123</p>
           </div>
