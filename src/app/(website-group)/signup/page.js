@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import baseUrl from "@/config/api";
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -23,7 +24,6 @@ export default function SignupPage() {
       console.log('🔄 Processing registration...');
 
       // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
-      const baseUrl = "https://ipage-api.onrender.com" || "http://localhost:5000";
       console.log('🔄 Attempting registration to:', `${baseUrl}/api/frontend/users/register`);
       console.log('📝 Form data:', { ...formData, password: '[HIDDEN]' });
 

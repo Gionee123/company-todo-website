@@ -2,9 +2,10 @@
 import React, { useEffect, useState } from "react";
 import AdminRouteGuard from "@/app/compontent/common/admin/AdminRouteGuard";
 import axios from "axios";
+import baseUrl from "@/config/api";
 
 export default function UserActions() {
-    let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
+    // let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
     const [users, setUsers] = useState([]);
     const [message, setMessage] = useState("");
 

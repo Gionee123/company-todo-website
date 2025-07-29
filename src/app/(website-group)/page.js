@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { MdDelete } from "react-icons/md";
 import { useRouter } from 'next/navigation';
+import baseUrl from "@/config/api";
 
 function isLoggedIn() {
   if (typeof window === "undefined") return false;
@@ -9,7 +10,7 @@ function isLoggedIn() {
 }
 
 export default function Home() {
-  let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
+  // let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
 
   const router = useRouter();

@@ -2,9 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import AdminRouteGuard from '@/app/compontent/common/admin/AdminRouteGuard';
 import axios from 'axios';
+import baseUrl from "@/config/api";
 
 export default function Dashboard() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
+  // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
   const [stats, setStats] = useState({
     totalUsers: 0,
     pendingUsers: 0,
@@ -192,9 +193,9 @@ export default function Dashboard() {
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-3">
                     <div className={`w-2 h-2 rounded-full ${activity.status === 'approved' ? 'bg-green-500' :
-                        activity.status === 'pending' ? 'bg-yellow-500' :
-                          activity.status === 'rejected' ? 'bg-red-500' :
-                            'bg-blue-500'
+                      activity.status === 'pending' ? 'bg-yellow-500' :
+                        activity.status === 'rejected' ? 'bg-red-500' :
+                          'bg-blue-500'
                       }`}></div>
                     <span className="text-gray-700">{activity.message}</span>
                   </div>

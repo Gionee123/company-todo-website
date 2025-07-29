@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Link from 'next/link';
+import baseUrl from "@/config/api";
 
 function isLoggedIn() {
   if (typeof window === "undefined") return false;
@@ -24,7 +25,6 @@ export default function LoginPage() {
 
     try {
       // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
-      const baseUrl = "https://ipage-api.onrender.com" || "http://localhost:5000";
 
 
       // API call for login using axios - match the user's API structure

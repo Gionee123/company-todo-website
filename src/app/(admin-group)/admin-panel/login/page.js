@@ -5,9 +5,10 @@ import { saveLoginDetails } from '../slice/AdminSlice';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Link from 'next/link';
+import baseUrl from "@/config/api";
 
 export default function Login() {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:5000";
+    // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:5000";
     console.log("baseUrl login page", baseUrl);
 
 

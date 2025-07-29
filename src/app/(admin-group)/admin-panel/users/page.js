@@ -2,9 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import AdminRouteGuard from '@/app/compontent/common/admin/AdminRouteGuard';
 import axios from 'axios';
+import baseUrl from "@/config/api";
 
 export default function AdminUsers() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
+  // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
   const [pendingUsers, setPendingUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");

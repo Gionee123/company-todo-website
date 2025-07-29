@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { logOut } from "@/app/(admin-group)/admin-panel/slice/AdminSlice";
+import baseUrl from "@/config/api";
 
 const links = [
   { href: "/admin-panel/dashboard", label: "Dashboard" },
@@ -14,7 +15,6 @@ const links = [
 
 export default function Sidebar() {
   // let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
-  const baseUrl = "https://ipage-api.onrender.com" || "http://localhost:5000";
   const pathname = usePathname();
   const dispatch = useDispatch();
   const [isClient, setIsClient] = useState(false);
