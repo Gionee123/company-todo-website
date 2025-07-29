@@ -23,11 +23,9 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
+      // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
+      const baseUrl = "https://ipage-api.onrender.com" || "http://localhost:5000";
 
-      console.log('🔄 Attempting login to:', `${baseUrl}/api/frontend/users/login`);
-      console.log('📧 Email:', email);
-      console.log('🔑 Password:', password ? '[HIDDEN]' : '[EMPTY]');
 
       // API call for login using axios - match the user's API structure
       const response = await axios.post(`${baseUrl}/api/frontend/users/login`, {
@@ -35,8 +33,6 @@ export default function LoginPage() {
         password: password,
         role: 'user' // Add role parameter as required by the controller
       });
-
-      console.log('✅ Login response:', response.data);
 
       // Check if login was successful based on user's API response structure
       if (response.data.status === false) {
@@ -69,12 +65,8 @@ export default function LoginPage() {
       }
 
     } catch (error) {
-      console.error('💥 Login error:', error);
-
       // Fallback to demo user login if API fails (for testing purposes)
       if (email === 'demo@example.com' && password === 'demo123') {
-        console.log('✅ Using fallback demo login');
-
         const fallbackUserData = {
           _id: 'demo-user-fallback',
           name: 'Demo User',
@@ -93,15 +85,12 @@ export default function LoginPage() {
         // Server responded with error status
         const errorMessage = error.response.data?.message || "Login failed. Please check your credentials.";
         setError(errorMessage);
-        console.error('❌ Server error:', error.response.data);
       } else if (error.request) {
         // Request was made but no response received
         setError("Network error. Please check your connection and try again.");
-        console.error('❌ Network error:', error.request);
       } else {
         // Something else happened
         setError("Login failed. Please try again.");
-        console.error('❌ Other error:', error.message);
       }
       setLoading(false);
     }

@@ -1,0 +1,5 @@
+{
+  "/(website-group)/login/page": "app/(website-group)/login/page.js",
+  "/(website-group)/page": "app/(website-group)/page.js",
+  "/(website-group)/signup/page": "app/(website-group)/signup/page.js"
+}

@@ -22,8 +22,8 @@ export default function SignupPage() {
     try {
       console.log('🔄 Processing registration...');
 
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
-
+      // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
+      const baseUrl = "https://ipage-api.onrender.com" || "http://localhost:5000";
       console.log('🔄 Attempting registration to:', `${baseUrl}/api/frontend/users/register`);
       console.log('📝 Form data:', { ...formData, password: '[HIDDEN]' });
 

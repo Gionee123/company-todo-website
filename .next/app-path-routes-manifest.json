@@ -1,0 +1,15 @@
+{
+  "/favicon.ico/route": "/favicon.ico",
+  "/_not-found/page": "/_not-found",
+  "/(admin-group)/admin-panel/dashboard/page": "/admin-panel/dashboard",
+  "/(admin-group)/admin-panel/page": "/admin-panel",
+  "/(admin-group)/admin-panel/login/page": "/admin-panel/login",
+  "/(admin-group)/admin-panel/user-actions/page": "/admin-panel/user-actions",
+  "/(admin-group)/admin-panel/todos/page": "/admin-panel/todos",
+  "/(admin-group)/admin-panel/users/page": "/admin-panel/users",
+  "/(website-group)/page": "/",
+  "/(website-group)/dashboard/page": "/dashboard",
+  "/(website-group)/login/page": "/login",
+  "/(website-group)/signup/page": "/signup",
+  "/(website-group)/todos/page": "/todos"
+}
