@@ -12,6 +12,7 @@ function isDueTodayOrPast(todo) {
   return due <= today;
 }
 
+
 function isLoggedIn() {
   if (typeof window === "undefined") return false;
   return !!localStorage.getItem('currentUser');

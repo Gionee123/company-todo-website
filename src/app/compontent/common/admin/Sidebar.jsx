@@ -13,6 +13,8 @@ const links = [
 ];
 
 export default function Sidebar() {
+  let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
+
   const pathname = usePathname();
   const dispatch = useDispatch();
   const [isClient, setIsClient] = useState(false);

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import axios from "axios";
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -20,40 +21,49 @@ export default function SignupPage() {
     try {
       console.log('🔄 Processing registration...');
 
-      // Check if user already exists
-      const existingUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-      const userExists = existingUsers.find(user => user.email === formData.email);
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
-      if (userExists) {
-        setError("User with this email already exists!");
+      console.log('🔄 Attempting registration to:', `${baseUrl}/api/frontend/users/register`);
+      console.log('📝 Form data:', { ...formData, password: '[HIDDEN]' });
+
+      // API call for registration using axios - match the user's API structure
+      const response = await axios.post(`${baseUrl}/api/frontend/users/register`, {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role
+      });
+
+      console.log('✅ Registration response:', response.data);
+
+      // Check if registration was successful
+      if (response.data.status === false) {
+        setError(response.data.message || "Registration failed. Please try again.");
         return;
       }
 
-      // Create new user
-      const newUser = {
-        _id: Date.now().toString(), // Simple ID generation
-        name: formData.name,
-        email: formData.email,
-        password: formData.password, // In real app, this should be hashed
-        role: formData.role,
-        status: 'pending', // Default status
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-
-      // Add to localStorage
-      existingUsers.push(newUser);
-      localStorage.setItem('registeredUsers', JSON.stringify(existingUsers));
-
-      console.log('✅ Registration successful!');
       setSuccess("Signup successful! Please wait for admin approval.");
 
       // Clear form after successful registration
       setFormData({ name: "", email: "", password: "", role: "user" });
 
     } catch (error) {
-      console.error('💥 Error:', error);
-      setError("Registration failed. Please try again.");
+      console.error('💥 Registration error:', error);
+
+      if (error.response) {
+        // Server responded with error status
+        const errorMessage = error.response.data?.message || "Registration failed. Please try again.";
+        setError(errorMessage);
+        console.error('❌ Server error:', error.response.data);
+      } else if (error.request) {
+        // Request was made but no response received
+        setError("Network error. Please check your connection and try again.");
+        console.error('❌ Network error:', error.request);
+      } else {
+        // Something else happened
+        setError("Registration failed. Please try again.");
+        console.error('❌ Other error:', error.message);
+      }
     }
   };
 

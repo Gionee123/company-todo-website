@@ -1,21 +1,32 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import AdminRouteGuard from '@/app/compontent/common/admin/AdminRouteGuard';
+import axios from 'axios';
 
 export default function AdminUsers() {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
   const [pendingUsers, setPendingUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
-  // Load pending users from localStorage
+  // Load pending users from API
   useEffect(() => {
-    const loadPendingUsers = () => {
+    const loadPendingUsers = async () => {
       try {
-        const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-        const pending = registeredUsers.filter(user => user.status === 'pending');
-        setPendingUsers(pending);
+        setLoading(true);
+        const response = await axios.get(`${baseUrl}/api/backend/users/pending-users`);
+        console.log('Pending users response:', response.data);
+        setPendingUsers(response.data);
       } catch (error) {
         console.error('Error loading pending users:', error);
+
+        if (error.response) {
+          console.error('Server error:', error.response.data);
+        } else if (error.request) {
+          console.error('Network error:', error.request);
+        } else {
+          console.error('Other error:', error.message);
+        }
         setPendingUsers([]);
       } finally {
         setLoading(false);
@@ -23,40 +34,42 @@ export default function AdminUsers() {
     };
 
     loadPendingUsers();
-
-    // Listen for storage changes
-    const handleStorageChange = () => {
-      loadPendingUsers();
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+  }, [baseUrl]);
 
   // Approve or reject user
-  const handleAction = (id, action) => {
+  const handleAction = async (id, action) => {
     try {
       setMessage(`Processing ${action}...`);
 
-      // Update in localStorage
-      const allUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-      const updatedUsers = allUsers.map(user =>
-        user._id === id
-          ? { ...user, status: action === 'approve' ? 'approved' : 'rejected', updatedAt: new Date().toISOString() }
-          : user
-      );
+      let response;
+      if (action === 'approve') {
+        response = await axios.post(`${baseUrl}/api/backend/users/approve-user/${id}`);
+      } else if (action === 'reject') {
+        response = await axios.post(`${baseUrl}/api/backend/users/reject-user/${id}`);
+      }
 
-      localStorage.setItem('registeredUsers', JSON.stringify(updatedUsers));
+      console.log(`✅ User ${action}d successfully!`, response.data);
 
-      // Update local state
+      // Update local state - remove the user from pending list
       setPendingUsers(prevUsers => prevUsers.filter(user => user._id !== id));
 
       setMessage(`User ${action}d successfully!`);
       setTimeout(() => setMessage(""), 3000);
 
     } catch (error) {
-      setMessage(`Error ${action}ing user`);
-      console.error(error);
+      console.error(`❌ Error ${action}ing user:`, error);
+
+      if (error.response) {
+        const errorMessage = error.response.data?.message || `Error ${action}ing user`;
+        setMessage(errorMessage);
+        console.error('Server error:', error.response.data);
+      } else if (error.request) {
+        setMessage("Network error. Please try again.");
+        console.error('Network error:', error.request);
+      } else {
+        setMessage(`Error ${action}ing user. Please try again.`);
+        console.error('Other error:', error.message);
+      }
     }
   };
 

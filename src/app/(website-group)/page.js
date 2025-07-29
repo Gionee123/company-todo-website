@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from 'react';
 import { MdDelete } from "react-icons/md";
 import { useRouter } from 'next/navigation';
@@ -10,6 +9,9 @@ function isLoggedIn() {
 }
 
 export default function Home() {
+  let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
+
+
   const router = useRouter();
   const [Todolist, setTodolist] = useState("");
   const [allDolist, setallDolist] = useState([]);

@@ -1,7 +1,7 @@
-import React from 'react'
+import React from "react";
 
 export default function Header() {
-  return (
-    <div>Header admin</div>
-  )
+  let baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
+
+  return <div>Header admin</div>;
 }

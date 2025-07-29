@@ -3,8 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveLoginDetails } from '../slice/AdminSlice';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import Link from 'next/link';
 
 export default function Login() {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:5000";
+    console.log("baseUrl login page", baseUrl);
+
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -17,31 +23,7 @@ export default function Login() {
         return myAllState.loginStore.adminDetails;
     });
 
-    // Create specific admin user if not exists
-    useEffect(() => {
-        const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-        const adminExists = registeredUsers.find(user => user._id === '6883a2e0a1a1ed7dd45f0eed');
-
-        if (!adminExists) {
-            const specificAdmin = {
-                _id: '6883a2e0a1a1ed7dd45f0eed',
-                adminName: 'admin',
-                adminPassword: 'admin123',
-                name: 'Admin User',
-                email: 'admin@admin.com',
-                password: 'admin123',
-                role: 'admin',
-                status: 'approved',
-                createdAt: '2025-07-25T15:29:36.775+00:00',
-                updatedAt: '2025-07-25T15:29:36.775+00:00',
-                __v: 0
-            };
-
-            registeredUsers.push(specificAdmin);
-            localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
-            console.log('Specific admin user created:', specificAdmin.adminName);
-        }
-    }, []);
+    // No need to create admin user in localStorage since we're using API now
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -49,54 +31,70 @@ export default function Login() {
         setLoading(true);
 
         try {
-            // Get registered users from localStorage
-            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            console.log('🔄 Attempting admin login to:', `${baseUrl}/api/backend/adminAuth/login`);
+            console.log('👤 Username:', username);
+            console.log('🔑 Password:', password ? '[HIDDEN]' : '[EMPTY]');
+            console.log('📤 Request payload:', { adminName: username, adminPassword: password });
 
-            // Find admin user by adminName or email
-            const adminUser = registeredUsers.find(u =>
-                (u.adminName === username || u.email === username) && u.role === 'admin'
-            );
+            // API call for admin login
+            const response = await axios.post(`${baseUrl}/api/backend/adminAuth/login`, {
+                adminName: username,
+                adminPassword: password
+            });
 
-            if (!adminUser) {
-                setError("Admin user not found.");
-                setLoading(false);
-                return;
-            }
+            console.log('✅ Admin login response:', response.data);
+            console.log('📊 Response status:', response.status);
+            console.log('📋 Response headers:', response.headers);
 
-            // Check password (try both adminPassword and password fields)
-            const isPasswordValid = adminUser.adminPassword === password || adminUser.password === password;
-
-            if (!isPasswordValid) {
-                setError("Invalid password.");
-                setLoading(false);
-                return;
-            }
-
-            // Check if admin is approved
-            if (adminUser.status !== 'approved') {
-                setError("Admin account is not active.");
+            // Check if login was successful
+            if (response.data.success === false) {
+                setError(response.data.message || "Login failed. Please check your credentials.");
                 setLoading(false);
                 return;
             }
 
             // Login successful
-            const adminWithRole = {
-                ...adminUser,
-                role: "admin"
+            const adminData = {
+                _id: response.data.admin._id,
+                adminName: response.data.admin.adminName,
+                name: 'Admin User',
+                email: 'admin@admin.com',
+                role: "admin",
+                status: 'approved'
             };
 
-            console.log("Login - Admin data to store:", adminWithRole);
+            console.log("Login - Admin data to store:", adminData);
 
             // Clear any existing admin cookie first
             document.cookie = "admin=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-            dispatch(saveLoginDetails({ admin: adminWithRole }));
+            dispatch(saveLoginDetails({ admin: adminData }));
             console.log("Login - Redirecting to dashboard");
             router.push("/admin-panel/dashboard");
 
-        } catch (err) {
-            console.error('Admin login error:', err);
-            setError("Login failed. Please try again.");
+        } catch (error) {
+            console.error('❌ Admin login error:', error);
+
+            if (error.response) {
+                let errorMessage;
+
+                if (error.response.status === 401) {
+                    errorMessage = "Invalid username or password. Please check your credentials.";
+                } else if (error.response.status === 400) {
+                    errorMessage = "Please provide both username and password.";
+                } else {
+                    errorMessage = error.response.data?.message || "Login failed. Please try again.";
+                }
+
+                setError(errorMessage);
+                console.error('Server error:', error.response.data);
+            } else if (error.request) {
+                setError("Network error. Please check your connection and try again.");
+                console.error('Network error:', error.request);
+            } else {
+                setError("Login failed. Please try again.");
+                console.error('Other error:', error.message);
+            }
             setLoading(false);
         }
     };
@@ -199,11 +197,31 @@ export default function Login() {
                 </button>
 
                 <div className="mt-4 text-center text-sm text-gray-600">
-                    <p>Admin Credentials:</p>
-                    <p>Username: admin</p>
-                    <p>Password: admin123</p>
+                    <p className="font-semibold mb-2">Admin Credentials:</p>
+                    <p>Username: <span className="font-mono bg-gray-100 px-2 py-1 rounded">admin</span></p>
+                    <p>Password: <span className="font-mono bg-gray-100 px-2 py-1 rounded">admin123</span></p>
+                    <p className="text-xs text-gray-500 mt-2">✅ Auto-created in database</p>
                 </div>
+
+                <Link href="/login">
+
+                    <button
+
+                        className={`w-full my-[5px] mx-auto text-white py-2 rounded transition ${loading
+                            ? 'bg-gray-400 cursor-not-allowed'
+                            : 'bg-black hover:bg-gray-800'
+                            }`}
+                        disabled={loading}
+                    >
+                        {loading ? "Logging in..." : "website login"}
+                    </button>
+
+
+                </Link>
+
+
             </form>
+
         </div>
     );
 }
