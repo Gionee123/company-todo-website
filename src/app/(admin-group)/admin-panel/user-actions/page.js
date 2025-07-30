@@ -12,11 +12,8 @@ export default function UserActions() {
         const loadUsers = () => {
             try {
                 const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-                // Filter to show only approved and rejected users
-                const filteredUsers = registeredUsers.filter(user =>
-                    user.status === 'approved' || user.status === 'rejected'
-                );
-                setUsers(filteredUsers);
+                // Show all registered users
+                setUsers(registeredUsers);
             } catch (error) {
                 console.error('Error loading users:', error);
                 setUsers([]);
@@ -36,9 +33,9 @@ export default function UserActions() {
         return () => window.removeEventListener('storage', handleStorageChange);
     }, []);
 
-    const handleConvertToApproved = async (userId) => {
+    const handleApproveUser = async (userId) => {
         try {
-            setMessage("Converting user status...");
+            setMessage("Approving user...");
 
             // Update in localStorage
             const allUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
@@ -59,11 +56,43 @@ export default function UserActions() {
                 )
             );
 
-            setMessage("User successfully converted to approved!");
+            setMessage("User successfully approved!");
             setTimeout(() => setMessage(""), 3000);
 
         } catch (error) {
-            setMessage("Error converting user status");
+            setMessage("Error approving user");
+            console.error(error);
+        }
+    };
+
+    const handleRejectUser = async (userId) => {
+        try {
+            setMessage("Rejecting user...");
+
+            // Update in localStorage
+            const allUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            const updatedUsers = allUsers.map(user =>
+                user._id === userId
+                    ? { ...user, status: 'rejected', updatedAt: new Date().toISOString() }
+                    : user
+            );
+
+            localStorage.setItem('registeredUsers', JSON.stringify(updatedUsers));
+
+            // Update local state
+            setUsers(prevUsers =>
+                prevUsers.map(user =>
+                    user._id === userId
+                        ? { ...user, status: 'rejected', updatedAt: new Date().toISOString() }
+                        : user
+                )
+            );
+
+            setMessage("User successfully rejected!");
+            setTimeout(() => setMessage(""), 3000);
+
+        } catch (error) {
+            setMessage("Error rejecting user");
             console.error(error);
         }
     };
@@ -72,6 +101,7 @@ export default function UserActions() {
         switch (status) {
             case 'approved': return 'text-green-600 bg-green-100';
             case 'rejected': return 'text-red-600 bg-red-100';
+            case 'pending': return 'text-yellow-600 bg-yellow-100';
             default: return 'text-gray-600 bg-gray-100';
         }
     };
@@ -145,16 +175,37 @@ export default function UserActions() {
                                             {new Date(user.updatedAt).toLocaleDateString()} {new Date(user.updatedAt).toLocaleTimeString()}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            {user.status === 'pending' && (
+                                                <div className="flex space-x-2">
+                                                    <button
+                                                        onClick={() => handleApproveUser(user._id)}
+                                                        className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm transition-colors"
+                                                    >
+                                                        Approve
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleRejectUser(user._id)}
+                                                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition-colors"
+                                                    >
+                                                        Reject
+                                                    </button>
+                                                </div>
+                                            )}
                                             {user.status === 'rejected' && (
                                                 <button
-                                                    onClick={() => handleConvertToApproved(user._id)}
+                                                    onClick={() => handleApproveUser(user._id)}
                                                     className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm transition-colors"
                                                 >
-                                                    Convert to Approved
+                                                    Approve
                                                 </button>
                                             )}
                                             {user.status === 'approved' && (
-                                                <span className="text-green-600 text-sm">✓ Already Approved</span>
+                                                <button
+                                                    onClick={() => handleRejectUser(user._id)}
+                                                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition-colors"
+                                                >
+                                                    Reject
+                                                </button>
                                             )}
                                         </td>
                                     </tr>
@@ -164,8 +215,8 @@ export default function UserActions() {
 
                         {users.length === 0 && (
                             <div className="text-center py-8 text-gray-500">
-                                <p className="text-lg mb-2">No approved or rejected users found</p>
-                                <p className="text-sm">Users will appear here after they are approved or rejected by admin</p>
+                                <p className="text-lg mb-2">No registered users found</p>
+                                <p className="text-sm">Users will appear here after they register</p>
                             </div>
                         )}
                     </div>

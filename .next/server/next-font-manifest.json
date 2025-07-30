@@ -12,11 +12,11 @@
       "static/media/b0a57561b6cb5495-s.p.da1ebef7.woff2",
       "static/media/8ee3a1ba4ed5baee-s.p.be19f591.woff2"
     ],
-    "[project]/src/app/(admin-group)/admin-panel/users/page": [
+    "[project]/src/app/(admin-group)/admin-panel/user-actions/page": [
       "static/media/b0a57561b6cb5495-s.p.da1ebef7.woff2",
       "static/media/8ee3a1ba4ed5baee-s.p.be19f591.woff2"
     ],
-    "[project]/src/app/(website-group)/dashboard/page": [
+    "[project]/src/app/(admin-group)/admin-panel/users/page": [
       "static/media/b0a57561b6cb5495-s.p.da1ebef7.woff2",
       "static/media/8ee3a1ba4ed5baee-s.p.be19f591.woff2"
     ],
@@ -25,10 +25,6 @@
       "static/media/8ee3a1ba4ed5baee-s.p.be19f591.woff2"
     ],
     "[project]/src/app/(website-group)/page": [
-      "static/media/b0a57561b6cb5495-s.p.da1ebef7.woff2",
-      "static/media/8ee3a1ba4ed5baee-s.p.be19f591.woff2"
-    ],
-    "[project]/src/app/(website-group)/signup/page": [
       "static/media/b0a57561b6cb5495-s.p.da1ebef7.woff2",
       "static/media/8ee3a1ba4ed5baee-s.p.be19f591.woff2"
     ]
