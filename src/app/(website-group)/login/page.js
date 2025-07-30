@@ -113,7 +113,7 @@ export default function LoginPage() {
       >
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h1>
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm text-center">{error}</div>
+          <div className="mb-6 p-3 bg-red-100 text-red-700 rounded-md text-sm text-center">{error}</div>
         )}
         <div className="mb-4">
           <label className="block text-gray-700 mb-2">Email</label>
